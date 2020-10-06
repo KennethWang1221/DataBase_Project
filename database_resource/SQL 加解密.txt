@@ -1,0 +1,101 @@
+create symmetric key zh with algorithm = aes_256 encryption by password = '123'
+open symmetric key zh decryption by password = '123'
+select ENCRYPTBYKEY(key_guid('zh'),'hello')
+select CONVERT(varchar(10),decryptbykey(0x0077061BF0C11149BDAB210222C88C390100000001FB955140A3FEEB2E581313450FA08AEAB7F383BA11BA0088B0BC29868ECBE8))
+close symmetric key zh
+drop symmetric key zh
+
+--------------------------------------------------------------------------------------------------------------
+ 
+--1、创建名称为asymDemokey的非对称密钥  
+create asymmetric key asymDemokey  
+with algorithm =rsa_512 --加密安全类型  
+encryption by password='123' --密码  
+  
+--2、查看当前数据库中的非对称密钥  
+SELECT name, algorithm_desc, pvt_key_encryption_type_desc   
+FROM sys.asymmetric_keys   
+  
+--3、修改私钥密码  
+ALTER ASYMMETRIC KEY asymDemoKey--要修改的密钥名称   
+WITH PRIVATE KEY --私钥   
+(ENCRYPTION BY PASSWORD = '456',--指定新密码   
+DECRYPTION BY PASSWORD = '123')--旧密码是用来解密的   
+  
+  
+--4、创建需要加密的数据   
+Create Table BankUser   
+(PKID int primary key identity(1,1)   
+,UserNo varbinary(1000) null  --一定要用二进制数据类型  
+,CurState datetime   not null   
+)   
+go   
+  
+insert into BankUser   
+(UserNo,CurState)   
+VALUES (EncryptByAsymKey(AsymKey_ID('asymDemoKey'),'137'),GETDATE())   
+--插入一条记录，字段UserNo存储了加密的号码值 137  
+--EncryptByAsymKey 加密数据  
+go  
+
+select * from BankUser
+
+--查看未加密的数据：    
+SELECT PKID,Curstate,   
+cast   
+(DecryptByAsymKey(AsymKey_ID('asymDemoKey'),UserNo,N'456')   
+as varchar(1000)) as UserNo --需要原始私钥   
+,userno 加密  
+from BankUser   
+  
+--5、删除非对称密钥  
+   
+DROP ASYMMETRIC KEY asymDemoKey 
+
+
+
+约束练习
+
+create table student(
+name varchar(20) , age int constraint c1 check (age<=35),
+grade float 
+)
+
+insert into student values ('liming','18',95)
+
+alter table student 
+nocheck constraint c1
+
+insert into student values ('sdg','40',55)
+
+select * from student
+
+alter table student
+check constraint c1
+
+insert into student values ('lixoahao ',48,57)
+
+
+create table tb1
+(
+	id int ,
+	col1 int  constraint tbc1 check(col1>=65),
+	col2 int  constraint tbc2 check(col2>=65),
+	col3 int  constraint tbc3 check(col3>=65),
+	col4 int  constraint tbc4 check(col4>=65),
+	col5 int  constraint tbc5 check(col5>=65),
+	col6 int  constraint tbc6 check(col6>=65),
+	
+)
+
+create rule quize1
+as 
+@value >=65
+
+sp_bindrule quize1 ,'tb1.col1'
+
+insert into tb1 values(1,70)
+select * from tb1
+
+
+sp_unbindrule 'tb1.col1'

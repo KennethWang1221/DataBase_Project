@@ -1,0 +1,84 @@
+user test
+
+	--第一题:计算1-10之间的累加和
+	
+declare @sum int
+declare @i int
+set @sum =0
+set @i=1
+while (@i<=10)
+begin
+	set @sum=@sum+@i;
+	set @i = @i+1;
+end
+print @sum;
+go
+
+	--第二题:计算1-10之间的偶数和
+	
+declare @sum1 int
+declare @j int
+set @sum1 = 0
+set @j=1;
+while @j<=10
+begin
+	if @j%2=0 
+		begin
+			print @j
+			set @sum1 = @sum1+@j;
+		end
+	set @j = @j+1;
+end
+print @sum1;
+go
+
+	--第三题1-100的所有素数
+
+declare @j int,@blo int
+declare @n int
+set @j=1;
+while(@j<=100)
+begin
+	set @n = 2;
+	set @blo = 1;
+	while @n<= sqrt(@j)
+	begin
+		if @j%@n=0
+			begin
+				set @blo =0
+				break;
+			end
+		set @n = @n+1
+	end
+	if @blo =1
+		print @j
+	set @j=@j+1
+	
+end
+go
+
+
+
+select *from Class
+
+select * from Course
+
+select * from Department
+
+select * from StuCou
+
+select * from Student
+
+--第四题 陈海珊这学期总学分，达到6分及6分以上合格，否则不合格
+declare @xf int
+
+select @xf = sum(Course.Credit)
+from Student,Course,StuCou
+where Student.StuName = '陈燕珊' 
+		and Student.StuNo = StuCou.StuNo 
+		and StuCou.CouNo = Course.CouNo
+
+if @xf>= 6
+	print '学分够6分，及格' 
+else
+	print '学分不够6分，不及格' 

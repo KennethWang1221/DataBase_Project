@@ -1,0 +1,11 @@
+create rule score
+as
+@value between 0 and 100
+
+sp_bindrule score,'cj.chengji'//绑定规则
+
+sp_unbindrule 'cj.chengji'//解除规则绑定
+
+drop rule score //删除规则
+
+//score是给规则起的名气，cj是表名，chengji是列名

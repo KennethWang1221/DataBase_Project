@@ -1,0 +1,47 @@
+1.新建视图vw_kind，查看信息技术类课程的信息。
+create view vw_kind
+as 
+select * 
+from Course
+where Kind='信息技术'
+
+2.新建视图vw_credit，显示学分在2.5及其以上的课程信息。
+create view vw_credit
+as
+select *
+from Course
+where Credit >= 2.5
+
+3.查看视图vw_credit的定义信息。
+sp_helptext vw_credit
+
+4.新建视图vw_depart,显示01部门开设的课程信息，并对视图定义语句进行加密。
+create view vw_depart
+with encryption
+as
+select * 
+from Course
+where DepartNo = '01'
+
+5.查看视图vw_depart的定义语句
+sp_helptext vw_depart
+
+6.新建视图vw_zhang，显示张姓同学的信息。
+create view vw_zhang
+as
+select *
+from Student
+where StuName like '张%'
+
+7.在vw_zhang视图中添加学生信息('00000009','20000005','刘御风','ABCDE')
+
+8.新建视图vw_li，显示李姓同学的信息，并且当对该视图进行插入、修改时要进行语句检查。
+create view vw_li
+as
+select *
+from Student
+where StuName like '李%'
+with check option
+
+9.在vw_li视图中添加学生信息('00000007','20000005','王阳明','12345')
+10.通过Management Studio来创建视图vw_stucou,显示（学生姓名，课程名称，课程类别）。

@@ -1,0 +1,217 @@
+
+存储过程练习1
+1--创建一个存储过程
+create procedure proc_course
+as
+select * from course
+
+exec proc_course
+
+--2创建一个无参的存储过程
+create procedure proc_course2
+@cno char(20)
+as
+select * from course
+where CouNo=@cno
+
+exec proc_course2 '003'
+
+--3先显示学生信息，在显示课程信息  存储过程的嵌套
+create procedure proc_course3
+as
+select * from student 
+exec proc_course
+
+exec proc_course3
+
+
+exec sp_helptext proc_course2
+
+
+--4定义一个减法存储过程
+create proc jianfa
+@bjs int,@js int,@cha int output
+as
+	set @cha=@bjs-@js
+	
+declare @a int 
+declare @b int 
+declare @c int 
+set @a=5
+set @b=3
+exec jianfa @a,@b,@c output
+
+print @c
+
+
+
+
+1--创建一个存储过程
+create procedure proc_course
+as
+select * from course
+
+exec proc_course
+
+--2创建一个有参的存储过程
+create procedure proc_course2
+@cno char(20)
+as
+select * from course
+where CouNo=@cno
+
+exec proc_course2 '003'
+
+--3先显示学生信息，在显示课程信息  存储过程的嵌套
+create procedure proc_course3
+as
+select * from student 
+exec proc_course
+
+exec proc_course3
+
+
+exec sp_helptext proc_course2
+
+
+--4定义一个减法存储过程
+create proc jianfa
+@bjs int,@js int,@cha int output
+as
+	set @cha=@bjs-@js
+	
+declare @a int 
+declare @b int 
+declare @c int 
+set @a=5
+set @b=3
+exec jianfa @a,@b,@c output
+
+print @c
+
+
+存储过程练习2
+--创建mydb数据库，并创建 学生表（学号、姓名、性别、年龄、专业）、课程表（课程编号、课程名称、先行课号、学分）和选课表（学号、课程号、成绩）
+create database mydb
+go
+use mydb
+go
+
+CREATE TABLE Student          
+(
+Sno CHAR(9),
+Sname CHAR(20),
+Sgender CHAR(2),
+Sage SMALLINT,
+Sdept  CHAR(20)
+)
+
+insert into Student values('200215121','李勇','男',20,'CS')
+insert into Student values('200215122','刘晨','女',19,'CS')
+insert into Student values('200215123','王敏','女',18,'MA')
+insert into Student values('200215125','张立','男',19,'IS')
+ 
+CREATE TABLE Course
+(
+Cno CHAR(4),
+Cname  CHAR(40),
+Cpno CHAR(4),
+Ccredit SMALLINT
+)
+
+insert into Course values('1','数据库','5',4)
+insert into Course values('2','数学',NULL,2)
+insert into Course values('3','信息系统','1',4)
+insert into Course values('4','操作系统','6',3)
+insert into Course values('5','数据结构','7',4)
+insert into Course values('6','数据处理',NULL,2)
+insert into Course values('7','PASCAL语言','6',4)
+
+
+CREATE TABLE SC
+(
+Sno CHAR(9),
+Cno CHAR(4),
+Grade SMALLINT
+)
+insert into SC values('200215121','1',92)
+insert into SC values('200215121','2',85)
+insert into SC values('200215121','3',88)
+insert into SC values('200215122','2',90)
+insert into SC values('200215123','3',80)
+
+
+--1.创建存储过程proc_stu，统计各专业学生的人数
+create procedure proc_stu1
+as
+select 专业=sdept ,各个专业人数=count(*) from student
+group by sdept
+
+exec proc_stu1
+
+--2.创建存储过程 proc_cou，计算并显示开设课程的平均学分
+create procedure proc_cou
+as
+select avg(Ccredit)'本学期课程平均学分：'
+from course
+
+exec proc_cou
+
+--3.创建存储过程 proc_cx，查询无人愿意选的课程（今后会取消这类课程）
+create procedure proc_cx
+as
+select cno, cname 
+from course 
+where cno not in (select cno from sc)
+
+exec proc_cx
+
+--4.创建存储过程 proc_sc，
+--查看学生的选课情况（即用户输入姓名，存储过程显示该学生的选课信息）
+create procedure proc_sc1
+@sname char(20)
+as
+select cname
+from course,sc,student
+where student.sno=sc.sno and
+	  course.cno=sc.cno and
+	  sname=@sname
+
+exec proc_sc1 '刘晨'
+--5.创建存储过程 proc_fac，
+--该存储过程可以计算数字的阶乘（例如，输入5会计算5！的值并显示,考虑使用输出参数）
+create procedure proc_fac
+@num int,@fac int output
+as
+	declare @k int 
+	set @k=1
+	set @fac=1
+	while(@k <= @num)
+		begin 
+			@fac=@fac*@k
+			set @k=@k+1
+		end
+
+declare @a int 
+declare @b int 
+set @a=3
+exec proc_fac @a,@b output
+print @b
+
+
+
+	
+	
+
+
+
+
+
+
+
+	
+	
+
+
+
+

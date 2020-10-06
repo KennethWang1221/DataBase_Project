@@ -1,0 +1,90 @@
+第一题计算1-10累加和
+
+declare @ i int 
+declare @ sum int 
+
+set @i=1
+set @sum=0
+
+while @i<10
+set @sum=@sum+@i
+set @i=@i+1
+
+end
+print @sum 
+go
+计算1-10以内的阶乘
+declare @i int 
+declare @fac int 
+
+set @ i=1
+set @fac =1
+while @i<10
+begin 
+set @fac=@fac*@i
+set @i=@i+1
+end 
+print @fac
+
+计算1-10以内之间的偶数和
+declare @i int 
+declare @sum int 
+
+set @i=1
+set @sum=0
+while @i<10
+begin 
+if (@i%2==0)
+	set @sum=@sum+@i
+end
+	set @i=@i+1
+end 
+print @sum
+
+计算1-10以内的偶数和
+declare @i int 
+declare @sum int 
+set @i=1
+set @sum=0
+while @i<10
+begin 
+ if @i%2==0
+begin
+	set @sum=@sum+@i
+end
+set @i=@i+1
+print @sum 
+end
+
+declare @i int 
+declare @sum int 
+
+set @i=1
+set @sum=1
+
+while @i<10
+begin
+if (@i%2==0)
+begin
+print @i
+set @sum=@sum + @i
+end
+set @i=@i+1
+ 
+end
+print @sum
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

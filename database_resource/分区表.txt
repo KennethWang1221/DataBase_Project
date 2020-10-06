@@ -1,0 +1,57 @@
+create database test
+--1.创建文件组
+alter database test add filegroup fg1
+alter database test add filegroup fg2
+alter database test add filegroup fg3
+
+--2.创建数据文件到文件组里面
+alter database test add file 
+(name='file1',
+filename='c:\file1.ndf',
+size=5MB,filegrowth=5MB)
+to filegroup fg1
+
+alter database test add file 
+(name='file2',
+filename='c:\file2.ndf',
+size=5MB,filegrowth=5MB)
+to filegroup fg2
+
+alter database test add file 
+(name='file3',
+filename='c:\file3.ndf',
+size=5MB,filegrowth=5MB)
+to filegroup fg3
+
+//分区函数
+create partition function saleAmountPF(INT)
+as range left for values(10,100)
+
+//分区方案
+create partition scheme saleAmountPS
+as partition saleamountPF
+to (fg1,fg2,fg3)
+
+//创建表
+create table salePT(
+ID int,
+saleAmount int,
+saleDate datetime
+)on saleAmountPS(saleAmount)
+
+
+select * from salePT
+
+insert into salePT values(1,15,'2018/02/11')
+insert into salePT values(2,19,'2018/02/12')
+insert into salePT values(3,6,'2018/02/12')
+insert into salePT values(4,180,'2018/03/15')
+insert into salePT values(5,220,'2018/03/19')
+
+//查询2号分区有哪些记录
+select * from salePT
+where $partition.saleAmountPF(saleAmount)=2
+
+//查询值为180的记录在哪个分区
+select $partition.saleAmountPF(180) 
+

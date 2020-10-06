@@ -1,0 +1,26 @@
+--创建一个带约束的表
+create table newstudent
+(
+	sname char(20),
+	sage int constraint c1 check (sage <= 30),
+	score float constraint c2 check (score between 0 and 100)
+)
+
+insert into newstudent values ('lily',25,95)
+insert into newstudent values ('Odo',55,96)
+
+--禁用该约束
+alter table newstudent
+nocheck  constraint c1
+insert into newstudent values ('Odo',55,96)
+insert into newstudent values ('adams',36,102)
+--启用约束
+alter table newstudent
+check constraint c1
+insert into newstudent values('linda',41,88)
+
+--禁用所有约束
+alter table newstudent
+nocheck constraint all
+
+insert into newstudent values('teli',55,125)

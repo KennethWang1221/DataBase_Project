@@ -1,0 +1,38 @@
+--1）在student上创建INSERT触发器stu_insert，要求在student表中插入记录时(要求每次只能插入一条记录)，这个触发器都将更新class表中的class_nun列。并测试触发器stu_insert。
+create trigger stu_insert 
+on student
+for insert 
+as
+update class
+set class_num=classnum+1
+where
+where class_id=(select class_id from inserted)
+
+select *
+--测试
+insert into student values('0602011','文','女','1986-09-21', '0602')
+
+
+--2）在student上创建DELETE触发器stu_delete，要求在student表中删除记录时，这个触发器都将更新class表中的class_nun列。并测试触发器stu_delete。
+
+--测试
+delete from student where stu_id='0601001' 
+
+--3）查看触发器相关信息:使用系统存储过程sp_help，sp_helptext查看触发器相关信息。
+exec sp_help
+exec sp_help stu_insert
+exec sp_helptext stu_insert
+
+--4）对于下列触发器：
+create trigger stu_update
+on student
+after update
+as
+print '修改学生表'
+执行语句
+update student
+set stu_id='0601003'
+where stu_name='鲁斌'
+会怎么样？
+
+--5）创建DDL触发器，在当前数据库中不允许删除或修改表

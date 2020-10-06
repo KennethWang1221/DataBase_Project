@@ -1,0 +1,17 @@
+--新建一个表已经有数据
+create table newstudent
+(
+	sname char(20),
+	sage int
+)
+insert into newstudent values('liming',18)
+insert into newstudent values('chenchen',38)
+
+--给已有表增加约束
+alter table newstudent
+with nocheck
+add constraint c1 check (sage<=30)
+
+--添加不符合约束的记录
+insert into newstudent values('chenqi',36)
+select * from newstudent

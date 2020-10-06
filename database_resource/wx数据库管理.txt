@@ -1,0 +1,95 @@
+--1.新建数据库mydb p81
+--要求：
+--（1）数据文件名为data,存储到D盘根目录，初始体积5MB，最大30MB，增长率为10%。
+--（2）日志文件名为lg,存储到D盘根目录，初始体积3MB，最大10MB，增长率为20%。
+--
+use master 
+create database wx
+on 
+(
+    name = wx_data,
+    filename='D:\wx_data.mdf',
+    size=5,
+    maxsize=30,
+    filegrowth=10%
+)
+log on(
+name=wx_log,
+filename='D:\wx_log.ldf',
+size=2,
+maxsize=10,
+filegrowth = 20%
+)
+go
+
+
+
+--2.mydb数据库容量不足，请：p93
+--（1）为该数据库增加一个名为fg的文件组。
+--（2）向mydb数据库添加名为data2的数据文件,
+--该文件的初始体积3MB，最大10MB，增长率为2MB,要求该数据文件归fg文件组管理。
+use master
+go
+alter database wx add filegroup fg1
+go
+alter database wx
+add file
+(
+  name=data2,
+  filename ='D:\wx_data2.mdf',
+  size=3,maxsize=10,filegrowth=2%
+)
+to filegroup fg1
+go
+
+--3.修改mydb数据库中data2文件的体积由原来的3MB，修改为5MB  p89
+use master
+go 
+alter database wx
+modify file
+(
+	name=data2,size=10
+)
+go
+
+--4.为mydb数据库创建名为dbsnap的快照。p95
+
+create database dbsnap
+on (
+	name=wx_data,filename ='D:\wx_data1.snp'
+),
+(
+	name=data,filename ='D:\wx_data2.snp'
+),
+
+(
+	name=data2,filename ='D:\wx_data3.snp'
+),
+(
+	name=data3,filename ='D:\wx_data4.snp'
+),
+(   name=data5,filename ='D:\wx_data5.snp'),
+
+(   name=data6,filename ='D:\wx_data6.snp'
+)
+as snapshot of wx
+
+--5.为节约空间提高空间利用率，设置mydb数据库的体积可以  自动收缩  释放不用的空间。
+alter database wx set auto_shrink on
+
+
+--以下三题不可执行，因为给当前数据库创建了快照 ！！！ 这是规定
+--6.将mydb数据库分离
+--7.将mydb数据库附件到当前实例中
+--8.删除mydb数据库（先不要删除，会就行）
+
+
+create table sales(
+	shangpin char (20),
+	danjia float,
+	shuliang int,
+	heji as danjia * shuliang,
+	bianhao int identity (1,1)
+)
+
+  
